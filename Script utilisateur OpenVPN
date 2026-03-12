@@ -1,0 +1,34 @@
+#!/bin/bash
+# Remplace par l'IP de ta VM ici !
+REMOTE_IP="192.168.10.10"
+
+cat <<EOF
+client
+dev tun
+proto udp
+remote $REMOTE_IP 1194
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+remote-cert-tls server
+cipher AES-256-GCM
+auth SHA256
+key-direction 1
+auth-user-pass
+verb 3
+
+<ca>
+$(cat ~/easy-rsa/pki/ca.crt)
+</ca>
+<cert>
+$(cat ~/easy-rsa/pki/issued/client1.crt)
+</cert>
+<key>
+$(cat ~/easy-rsa/pki/private/client1.key)
+</key>
+<tls-auth>
+$(cat /etc/openvpn/ta.key)
+</tls-auth>
+EOF
+
